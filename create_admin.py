@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 from models import db, Role, User
+from admin_config import ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD
 
 app = Flask(__name__)
 
@@ -12,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Инициализация базы данных
 db.init_app(app)
 
-def create_admin(username, email, password):
+def create_admin():
     with app.app_context():
         # Проверяем, существует ли роль "Администратор"
         admin_role = Role.query.filter_by(name='Администратор').first()
@@ -22,29 +23,24 @@ def create_admin(username, email, password):
             db.session.commit()
 
         # Проверяем, не существует ли пользователь
-        if User.query.filter_by(username=username).first():
-            print(f"Пользователь с именем {username} уже существует.")
+        if User.query.filter_by(username=ADMIN_USERNAME).first():
+            print(f"Пользователь с именем {ADMIN_USERNAME} уже существует.")
             return
-        if User.query.filter_by(email=email).first():
-            print(f"Пользователь с email {email} уже существует.")
+        if User.query.filter_by(email=ADMIN_EMAIL).first():
+            print(f"Пользователь с email {ADMIN_EMAIL} уже существует.")
             return
 
         # Создаем администратора
         admin = User(
-            username=username,
-            email=email,
-            password_hash=generate_password_hash(password),
+            username=ADMIN_USERNAME,
+            email=ADMIN_EMAIL,
+            password_hash=generate_password_hash(ADMIN_PASSWORD),
             role_id=admin_role.role_id,
             is_active=True
         )
         db.session.add(admin)
         db.session.commit()
-        print(f"Администратор {username} успешно создан.")
+        print(f"Администратор {ADMIN_USERNAME} успешно создан.")
 
 if __name__ == '__main__':
-    # Укажите данные администратора
-    create_admin(
-        username='admin',
-        email='admin@example.com',
-        password='securepassword123'
-    )
+    create_admin()
