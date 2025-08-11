@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: inline-block; width: 150px; }
+        input, select { padding: 5px; width: 200px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Регистрация</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="role_id">Роль:</label>
+            <select id="role_id" name="role_id" required>
+                {% for role in roles %}
+                <option value="{{ role.role_id }}">{{ role.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="client_id">Клиент:</label>
+            <select id="client_id" name="client_id">
+                <option value="">Нет</option>
+                {% for client in clients %}
+                <option value="{{ client.client_id }}">{{ client.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p><a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a></p>
+</body>
+</html>
