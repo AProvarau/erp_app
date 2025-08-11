@@ -2,7 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Client, Role, User
+from models import db, Client, Role, User, Invitation
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -35,54 +36,57 @@ def login():
         email = request.form['email']
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password_hash, password):
-            login_user(user)
-            flash('Вход выполнен успешно.', 'success')
-            return redirect(url_for('home'))
+        if user:
+            if not user.is_active:
+                flash('Ваш аккаунт неактивен. Обратитесь к администратору.', 'error')
+                return redirect(url_for('login'))
+            if check_password_hash(user.password_hash, password):
+                login_user(user)
+                flash('Вход выполнен успешно.', 'success')
+                return redirect(url_for('home'))
         flash('Неверный email или пароль.', 'error')
     return render_template('login.html')
 
 
-# Маршрут для регистрации
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+# Маршрут для регистрации по приглашению
+@app.route('/register/<token>', methods=['GET', 'POST'])
+def register(token):
     if current_user.is_authenticated:
         return redirect(url_for('home'))
+
+    # Проверка токена приглашения
+    invitation = Invitation.query.filter_by(token=token, used=False).first()
+    if not invitation or invitation.expires_at < datetime.utcnow():
+        flash('Недействительная или просроченная ссылка для регистрации.', 'error')
+        return redirect(url_for('login'))
+
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        role_id = request.form['role_id']
-        client_id = request.form.get('client_id')
-
-        # Проверка, что роль не "Администратор"
-        role = Role.query.get(role_id)
-        if role.name == 'Администратор':
-            flash('Нельзя зарегистрировать администратора через эту форму.', 'error')
-            return redirect(url_for('register'))
 
         if User.query.filter_by(username=username).first():
             flash('Имя пользователя уже занято.', 'error')
-            return redirect(url_for('register'))
+            return redirect(url_for('register', token=token))
         if User.query.filter_by(email=email).first():
             flash('Email уже используется.', 'error')
-            return redirect(url_for('register'))
+            return redirect(url_for('register', token=token))
 
         user = User(
             username=username,
             email=email,
             password_hash=generate_password_hash(password),
-            role_id=role_id,
-            client_id=client_id if client_id else None
+            role_id=invitation.role_id,
+            client_id=invitation.client_id,
+            is_active=True
         )
+        invitation.used = True
         db.session.add(user)
         db.session.commit()
         flash('Регистрация успешна. Пожалуйста, войдите.', 'success')
         return redirect(url_for('login'))
 
-    roles = Role.query.filter(Role.name != 'Администратор').all()
-    clients = Client.query.all()
-    return render_template('register.html', roles=roles, clients=clients)
+    return render_template('register.html', token=token)
 
 
 # Маршрут для выхода
@@ -241,6 +245,29 @@ def admin_client_edit(client_id):
         return redirect(url_for('admin_clients'))
 
     return render_template('admin/client_form.html', client=client)
+
+
+# Маршрут для создания приглашения
+@app.route('/admin/invitation/new', methods=['GET', 'POST'])
+@login_required
+def admin_invitation_new():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        role_id = request.form['role_id']
+        client_id = request.form.get('client_id')
+
+        invitation = Invitation(role_id=role_id, client_id=client_id if client_id else None)
+        db.session.add(invitation)
+        db.session.commit()
+        invitation_url = url_for('register', token=invitation.token, _external=True)
+        flash(f'Приглашение создано. Ссылка: {invitation_url}', 'success')
+        return redirect(url_for('admin_users'))
+
+    roles = Role.query.all()
+    clients = Client.query.all()
+    return render_template('admin/invitation_form.html', roles=roles, clients=clients)
 
 
 if __name__ == '__main__':

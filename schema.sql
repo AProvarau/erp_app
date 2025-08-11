@@ -6,7 +6,7 @@ CREATE TABLE clients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Таблица для ролей (например, администратор, менеджер, сотрудник)
+-- Таблица для ролей (например, администратор, менеджер, декларант)
 CREATE TABLE roles (
     role_id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(50) NOT NULL UNIQUE,
@@ -23,6 +23,19 @@ CREATE TABLE users (
     client_id INTEGER,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles (role_id),
+    FOREIGN KEY (client_id) REFERENCES clients (client_id)
+);
+
+-- Таблица для приглашений
+CREATE TABLE invitations (
+    invitation_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token VARCHAR(36) NOT NULL UNIQUE,
+    role_id INTEGER NOT NULL,
+    client_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (role_id) REFERENCES roles (role_id),
     FOREIGN KEY (client_id) REFERENCES clients (client_id)
 );
