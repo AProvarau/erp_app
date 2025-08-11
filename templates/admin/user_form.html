@@ -54,7 +54,7 @@
         </div>
         <div class="form-group">
             <label for="is_active">Активен:</label>
-            <input type="checkbox" id="is_active" name="is_active" {% if user and user.is_active %}checked{% else %}checked{% endif %}>
+            <input type="checkbox" id="is_active" name="is_active" {% if user and user.is_active %}checked{% endif %}>
         </div>
         <button type="submit">{% if user %}Сохранить{% else %}Создать{% endif %}</button>
     </form>

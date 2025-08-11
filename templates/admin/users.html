@@ -17,6 +17,7 @@
     <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('logout') }}">Выйти</a>)</p>
     <a href="{{ url_for('admin_user_new') }}">Создать нового пользователя</a>
     <p><a href="{{ url_for('admin_invitation_new') }}">Создать приглашение</a></p>
+    <p><a href="{{ url_for('admin_invitations') }}">Просмотреть активные приглашения</a></p>
     <p><a href="{{ url_for('admin_clients') }}">К управлению клиентами</a></p>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

@@ -270,6 +270,31 @@ def admin_invitation_new():
     return render_template('admin/invitation_form.html', roles=roles, clients=clients)
 
 
+# Маршрут для просмотра активных приглашений
+@app.route('/admin/invitations')
+@login_required
+def admin_invitations():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('home'))
+    invitations = Invitation.query.filter_by(used=False).filter(Invitation.expires_at > datetime.utcnow()).all()
+    return render_template('admin/invitations.html', invitations=invitations)
+
+
+# Маршрут для удаления приглашения
+@app.route('/admin/invitation/<int:invitation_id>/delete', methods=['POST'])
+@login_required
+def admin_invitation_delete(invitation_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('home'))
+    invitation = Invitation.query.get_or_404(invitation_id)
+    db.session.delete(invitation)
+    db.session.commit()
+    flash('Приглашение успешно удалено.', 'success')
+    return redirect(url_for('admin_invitations'))
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

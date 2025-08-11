@@ -4,21 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="level 1">
-      <change afterPath="$PROJECT_DIR$/templates/admin/invitation_form.html" afterDir="false" />
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="данные администратора в отдельном файле">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/users.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/user_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/user_form.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -30,6 +30,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "AProvarau"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/AProvarau/erp_app.git",
+    "accountId": "cc2552be-212a-4c96-9011-46ff08bf77f2"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -48,13 +60,14 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/aprov/PycharmProjects/erp_app/templates/admin"
+    "last_opened_file_path": "C:/Users/aprov/PycharmProjects/erp_app",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\admin" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app" />
+      <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\admin" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
     </key>
   </component>
@@ -133,11 +146,40 @@
       <option name="project" value="LOCAL" />
       <updated>1754912222720</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Новый пользователь через пригласительную ссылку.">
+      <option name="closed" value="true" />
+      <created>1754914752905</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1754914752905</updated>
+    </task>
+    <task id="LOCAL-00003" summary="данные администратора в отдельном файле">
+      <option name="closed" value="true" />
+      <created>1754916384017</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1754916384017</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="level 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="level 1" />
+    <MESSAGE value="Новый пользователь через пригласительную ссылку." />
+    <MESSAGE value="данные администратора в отдельном файле" />
+    <option name="LAST_COMMIT_MESSAGE" value="данные администратора в отдельном файле" />
   </component>
 </project>
