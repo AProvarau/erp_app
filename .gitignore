@@ -2,3 +2,4 @@
 /instance/erp.db
 /.idea/
 /admin_config.py
+/email_config.py

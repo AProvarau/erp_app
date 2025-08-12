@@ -39,3 +39,13 @@ CREATE TABLE invitations (
     FOREIGN KEY (role_id) REFERENCES roles (role_id),
     FOREIGN KEY (client_id) REFERENCES clients (client_id)
 );
+
+-- Таблица для токенов сброса пароля
+CREATE TABLE password_reset_tokens (
+    token_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token VARCHAR(36) NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);

@@ -2,8 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, Client, Role, User, Invitation
+from models import db, Client, Role, User, Invitation, PasswordResetToken
 from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
+from email_config import SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, FROM_EMAIL
 
 app = Flask(__name__)
 
@@ -27,6 +30,37 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# Функция для отправки email
+def send_reset_email(to_email, token):
+    reset_url = url_for('reset_password', token=token, _external=True)
+    subject = 'Сброс пароля для ERP-приложения'
+    body = f'''
+    Здравствуйте,
+
+    Администратор инициировал сброс вашего пароля. Пожалуйста, перейдите по следующей ссылке, чтобы установить новый пароль:
+    {reset_url}
+
+    Ссылка действительна в течение 1 часа. Если вы не запрашивали сброс пароля, обратитесь к администратору.
+
+    С уважением,
+    Команда ERP
+    '''
+    msg = MIMEText(body)
+    msg['Subject'] = subject
+    msg['From'] = FROM_EMAIL
+    msg['To'] = to_email
+
+    try:
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SMTP_USERNAME, SMTP_PASSWORD)
+            server.sendmail(FROM_EMAIL, to_email, msg.as_string())
+    except Exception as e:
+        print(f"Ошибка отправки email: {e}")
+        return False
+    return True
+
+
 # Маршрут для логина
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -48,13 +82,59 @@ def login():
     return render_template('login.html')
 
 
+# Маршрут для запроса сброса пароля
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        email = request.form['email']
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if not user.is_active:
+                flash('Ваш аккаунт неактивен. Обратитесь к администратору.', 'error')
+                return redirect(url_for('forgot_password'))
+            token = PasswordResetToken(user_id=user.user_id)
+            db.session.add(token)
+            db.session.commit()
+            if send_reset_email(user.email, token.token):
+                flash('Ссылка для сброса пароля отправлена на ваш email.', 'success')
+            else:
+                flash('Ошибка при отправке email. Пожалуйста, попробуйте позже.', 'error')
+        else:
+            flash('Пользователь с таким email не найден.', 'error')
+        return redirect(url_for('forgot_password'))
+    return render_template('forgot_password.html')
+
+
+# Маршрут для сброса пароля
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    reset_token = PasswordResetToken.query.filter_by(token=token).first()
+    if not reset_token or reset_token.expires_at < datetime.utcnow():
+        flash('Недействительная или просроченная ссылка для сброса пароля.', 'error')
+        return redirect(url_for('forgot_password'))
+
+    if request.method == 'POST':
+        password = request.form['password']
+        user = User.query.get(reset_token.user_id)
+        user.password_hash = generate_password_hash(password)
+        db.session.delete(reset_token)
+        db.session.commit()
+        flash('Пароль успешно изменён. Пожалуйста, войдите.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html', token=token)
+
+
 # Маршрут для регистрации по приглашению
 @app.route('/register/<token>', methods=['GET', 'POST'])
 def register(token):
     if current_user.is_authenticated:
         return redirect(url_for('home'))
 
-    # Проверка токена приглашения
     invitation = Invitation.query.filter_by(token=token, used=False).first()
     if not invitation or invitation.expires_at < datetime.utcnow():
         flash('Недействительная или просроченная ссылка для регистрации.', 'error')
@@ -188,6 +268,27 @@ def admin_user_edit(user_id):
     return render_template('admin/user_form.html', user=user, roles=roles, clients=clients)
 
 
+# Маршрут для сброса пароля администратором
+@app.route('/admin/user/<int:user_id>/reset_password', methods=['POST'])
+@login_required
+def admin_user_reset_password(user_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('home'))
+    user = User.query.get_or_404(user_id)
+    if not user.is_active:
+        flash('Нельзя сбросить пароль для неактивного пользователя.', 'error')
+        return redirect(url_for('admin_users'))
+    token = PasswordResetToken(user_id=user.user_id)
+    db.session.add(token)
+    db.session.commit()
+    if send_reset_email(user.email, token.token):
+        flash(f'Ссылка для сброса пароля отправлена на {user.email}.', 'success')
+    else:
+        flash('Ошибка при отправке email. Пожалуйста, попробуйте позже.', 'error')
+    return redirect(url_for('admin_users'))
+
+
 # Маршруты админской части: клиенты
 @app.route('/admin/clients')
 @login_required
@@ -298,7 +399,6 @@ def admin_invitation_delete(invitation_id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        # Добавим тестовые роли, если их нет
         if not Role.query.filter_by(name='Администратор').first():
             admin_role = Role(name='Администратор', description='Полный доступ к системе')
             db.session.add(admin_role)

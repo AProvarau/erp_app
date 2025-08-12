@@ -32,6 +32,7 @@ class User(db.Model, UserMixin):
     client_id = db.Column(db.Integer, db.ForeignKey('clients.client_id'), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    password_reset_tokens = db.relationship('PasswordResetToken', backref='user', lazy=True)
 
     def get_id(self):
         return str(self.user_id)
@@ -53,4 +54,17 @@ class Invitation(db.Model):
         self.token = str(uuid.uuid4())
         self.role_id = role_id
         self.client_id = client_id
-        self.expires_at = datetime.utcnow() + timedelta(days=7)  # Приглашение действительно 7 дней
+        self.expires_at = datetime.utcnow() + timedelta(days=7)
+
+class PasswordResetToken(db.Model):
+    __tablename__ = 'password_reset_tokens'
+    token_id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(36), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    expires_at = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, user_id):
+        self.token = str(uuid.uuid4())
+        self.user_id = user_id
+        self.expires_at = datetime.utcnow() + timedelta(hours=1)  # Токен действителен 1 час
