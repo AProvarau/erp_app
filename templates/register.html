@@ -7,7 +7,7 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         .form-group { margin-bottom: 15px; }
         label { display: inline-block; width: 150px; }
-        input, select { padding: 5px; width: 200px; }
+        input { padding: 5px; width: 200px; }
         .error { color: red; }
         .success { color: green; }
     </style>
@@ -36,6 +36,6 @@
         </div>
         <button type="submit">Зарегистрироваться</button>
     </form>
-    <p><a href="{{ url_for('login') }}">Уже есть аккаунт? Войти</a></p>
+    <p><a href="{{ url_for('auth.login') }}">Вернуться к входу</a></p>
 </body>
 </html>

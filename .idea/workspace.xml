@@ -4,17 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="реализована функция просмотра активных приглашений и их удаления">
-      <change afterPath="$PROJECT_DIR$/templates/admin/reset_tokens.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/forgot_password.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/reset_password.html" afterDir="false" />
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="реализована функция восстановления пароля">
+      <change afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/blueprints/auth.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/blueprints/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/project_structure.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/client_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/client_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/clients.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/clients.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/invitation_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/invitation_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/invitations.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/invitations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/user_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/user_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/admin/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/users.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/forgot_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/forgot_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/reset_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reset_password.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,32 +62,33 @@
     <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 2
+  &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="318KNzhTQSUFRKqBFvgqYCTjgnB" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.create_admin.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/aprov/PycharmProjects/erp_app/templates/admin&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.app.executor": "Run",
+    "Python.create_admin.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/aprov/PycharmProjects/erp_app",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\aprov\PycharmProjects\erp_app" />
+      <recent name="C:\Users\aprov\PycharmProjects\erp_app\blueprints" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\admin" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
-      <recent name="C:\Users\aprov\PycharmProjects\erp_app" />
     </key>
   </component>
   <component name="RunManager" selected="Python.app">
@@ -180,7 +190,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754918525064</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="реализована функция восстановления пароля">
+      <option name="closed" value="true" />
+      <created>1754986525327</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1754986525327</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -199,6 +217,17 @@
     <MESSAGE value="Новый пользователь через пригласительную ссылку." />
     <MESSAGE value="данные администратора в отдельном файле" />
     <MESSAGE value="реализована функция просмотра активных приглашений и их удаления" />
-    <option name="LAST_COMMIT_MESSAGE" value="реализована функция просмотра активных приглашений и их удаления" />
+    <MESSAGE value="реализована функция восстановления пароля" />
+    <option name="LAST_COMMIT_MESSAGE" value="реализована функция восстановления пароля" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/blueprints/admin.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

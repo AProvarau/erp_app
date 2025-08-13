@@ -14,7 +14,7 @@
 </head>
 <body>
     <h1>{% if user %}Редактировать пользователя{% else %}Создать пользователя{% endif %}</h1>
-    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('logout') }}">Выйти</a>)</p>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -58,6 +58,6 @@
         </div>
         <button type="submit">{% if user %}Сохранить{% else %}Создать{% endif %}</button>
     </form>
-    <a href="{{ url_for('admin_users') }}">Назад к списку</a>
+    <a href="{{ url_for('admin.admin_users') }}">Назад к списку</a>
 </body>
 </html>

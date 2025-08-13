@@ -14,11 +14,11 @@
 </head>
 <body>
     <h1>Управление пользователями</h1>
-    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('logout') }}">Выйти</a>)</p>
-    <a href="{{ url_for('admin_user_new') }}">Создать нового пользователя</a>
-    <p><a href="{{ url_for('admin_invitation_new') }}">Создать приглашение</a></p>
-    <p><a href="{{ url_for('admin_invitations') }}">Просмотреть активные приглашения</a></p>
-    <p><a href="{{ url_for('admin_clients') }}">К управлению клиентами</a></p>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
+    <a href="{{ url_for('admin.admin_user_new') }}">Создать нового пользователя</a>
+    <p><a href="{{ url_for('admin.admin_invitation_new') }}">Создать приглашение</a></p>
+    <p><a href="{{ url_for('admin.admin_invitations') }}">Просмотреть активные приглашения</a></p>
+    <p><a href="{{ url_for('admin.admin_clients') }}">К управлению клиентами</a></p>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
@@ -45,14 +45,14 @@
             <td>{{ user.client.name if user.client else 'Нет' }}</td>
             <td>{{ 'Да' if user.is_active else 'Нет' }}</td>
             <td>
-                <a href="{{ url_for('admin_user_edit', user_id=user.user_id) }}">Редактировать</a>
-                <form method="POST" action="{{ url_for('admin_user_reset_password', user_id=user.user_id) }}" style="display:inline;">
+                <a href="{{ url_for('admin.admin_user_edit', user_id=user.user_id) }}">Редактировать</a>
+                <form method="POST" action="{{ url_for('admin.admin_user_reset_password', user_id=user.user_id) }}" style="display:inline;">
                     <button type="submit" onclick="return confirm('Вы уверены, что хотите инициировать сброс пароля для {{ user.username }}?')">Сбросить пароль</button>
                 </form>
             </td>
         </tr>
         {% endfor %}
     </table>
-    <p><a href="{{ url_for('home') }}">Назад на главную</a></p>
+    <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
 </body>
 </html>
