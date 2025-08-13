@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Blueprint'ы и вынос вспомогательных функций">
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="+проверка сложности пароля">
+      <change afterPath="$PROJECT_DIR$/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blueprints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blueprints/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project_structure.txt" beforeDir="false" afterPath="$PROJECT_DIR$/project_structure.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/client_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/client_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/invitation_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/invitation_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/admin/user_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/user_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/forgot_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/forgot_password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/reset_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/reset_password.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
@@ -79,7 +85,7 @@
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.create_admin">
+  <component name="RunManager" selected="Python.app">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="erp_app" />
       <option name="ENV_FILES" value="" />
@@ -126,8 +132,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.create_admin" />
         <item itemvalue="Python.app" />
+        <item itemvalue="Python.create_admin" />
       </list>
     </recent_temporary>
   </component>
@@ -194,7 +200,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755076819715</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="+проверка сложности пароля">
+      <option name="closed" value="true" />
+      <created>1755078342163</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1755078342163</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -215,7 +229,8 @@
     <MESSAGE value="реализована функция просмотра активных приглашений и их удаления" />
     <MESSAGE value="реализована функция восстановления пароля" />
     <MESSAGE value="Blueprint'ы и вынос вспомогательных функций" />
-    <option name="LAST_COMMIT_MESSAGE" value="Blueprint'ы и вынос вспомогательных функций" />
+    <MESSAGE value="+проверка сложности пароля" />
+    <option name="LAST_COMMIT_MESSAGE" value="+проверка сложности пароля" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

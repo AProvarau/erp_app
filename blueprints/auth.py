@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Invitation, PasswordResetToken
-from utils import send_reset_email, validate_password
+from forms import LoginForm, ForgotPasswordForm, ResetPasswordForm, RegisterForm
+from utils import send_reset_email
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
@@ -12,29 +13,27 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        user = User.query.filter_by(email=email).first()
-        if user:
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password_hash, form.password.data):
             if not user.is_active:
                 flash('Ваш аккаунт неактивен. Обратитесь к администратору.', 'error')
                 return redirect(url_for('auth.login'))
-            if check_password_hash(user.password_hash, password):
-                login_user(user)
-                flash('Вход выполнен успешно.', 'success')
-                return redirect(url_for('main.home'))
+            login_user(user)
+            flash('Вход выполнен успешно.', 'success')
+            return redirect(url_for('main.home'))
         flash('Неверный email или пароль.', 'error')
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
 @auth_bp.route('/forgot_password', methods=['GET', 'POST'])
 def forgot_password():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
-    if request.method == 'POST':
-        email = request.form['email']
-        user = User.query.filter_by(email=email).first()
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
         if user:
             if not user.is_active:
                 flash('Ваш аккаунт неактивен. Обратитесь к администратору.', 'error')
@@ -49,7 +48,7 @@ def forgot_password():
         else:
             flash('Пользователь с таким email не найден.', 'error')
         return redirect(url_for('auth.forgot_password'))
-    return render_template('forgot_password.html')
+    return render_template('forgot_password.html', form=form)
 
 
 @auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -61,21 +60,16 @@ def reset_password(token):
         flash('Недействительная или просроченная ссылка для сброса пароля.', 'error')
         return redirect(url_for('auth.forgot_password'))
 
-    if request.method == 'POST':
-        password = request.form['password']
-        is_valid, message = validate_password(password)
-        if not is_valid:
-            flash(message, 'error')
-            return redirect(url_for('auth.reset_password', token=token))
-
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
         user = db.session.get(User, reset_token.user_id)
-        user.password_hash = generate_password_hash(password)
+        user.password_hash = generate_password_hash(form.password.data)
         db.session.delete(reset_token)
         db.session.commit()
         flash('Пароль успешно изменён. Пожалуйста, войдите.', 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('reset_password.html', token=token)
+    return render_template('reset_password.html', form=form, token=token)
 
 
 @auth_bp.route('/register/<token>', methods=['GET', 'POST'])
@@ -88,27 +82,12 @@ def register(token):
         flash('Недействительная или просроченная ссылка для регистрации.', 'error')
         return redirect(url_for('auth.login'))
 
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-
-        is_valid, message = validate_password(password)
-        if not is_valid:
-            flash(message, 'error')
-            return redirect(url_for('auth.register', token=token))
-
-        if User.query.filter_by(username=username).first():
-            flash('Имя пользователя уже занято.', 'error')
-            return redirect(url_for('auth.register', token=token))
-        if User.query.filter_by(email=email).first():
-            flash('Email уже используется.', 'error')
-            return redirect(url_for('auth.register', token=token))
-
+    form = RegisterForm()
+    if form.validate_on_submit():
         user = User(
-            username=username,
-            email=email,
-            password_hash=generate_password_hash(password),
+            username=form.username.data,
+            email=form.email.data,
+            password_hash=generate_password_hash(form.password.data),
             role_id=invitation.role_id,
             client_id=invitation.client_id,
             is_active=True
@@ -119,7 +98,7 @@ def register(token):
         flash('Регистрация успешна. Пожалуйста, войдите.', 'success')
         return redirect(url_for('auth.login'))
 
-    return render_template('register.html', token=token)
+    return render_template('register.html', form=form, token=token)
 
 
 @auth_bp.route('/logout')

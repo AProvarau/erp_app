@@ -2,7 +2,6 @@ import smtplib
 from email.mime.text import MIMEText
 from flask import url_for
 from email_config import SMTP_SERVER, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, FROM_EMAIL
-import re
 
 def send_reset_email(to_email, token):
     reset_url = url_for('auth.reset_password', token=token, _external=True)
@@ -32,20 +31,3 @@ def send_reset_email(to_email, token):
         print(f"Ошибка отправки email: {e}")
         return False
     return True
-
-def validate_password(password):
-    """
-    Проверяет сложность пароля.
-    Возвращает кортеж (is_valid, message).
-    """
-    if len(password) < 8:
-        return False, "Пароль должен содержать минимум 8 символов."
-    if not re.search(r"[A-Z]", password):
-        return False, "Пароль должен содержать хотя бы одну заглавную букву."
-    if not re.search(r"[a-z]", password):
-        return False, "Пароль должен содержать хотя бы одну строчную букву."
-    if not re.search(r"\d", password):
-        return False, "Пароль должен содержать хотя бы одну цифру."
-    if not re.search(r"[!@#$%^&*]", password):
-        return False, "Пароль должен содержать хотя бы один специальный символ (!@#$%^&*)."
-    return True, "Пароль соответствует требованиям."

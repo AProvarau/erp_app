@@ -18,6 +18,7 @@ project/
 │   ├── register.html
 ├── app.py
 ├── config.py
+├── forms.py
 ├── utils.py
 ├── models.py
 ├── schema.sql

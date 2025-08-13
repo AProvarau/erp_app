@@ -1,6 +1,6 @@
 /.venv/
 /instance/erp.db
-/.idea/
+**/.idea/
 /admin_config.py
 /email_config.py
 /config.py
