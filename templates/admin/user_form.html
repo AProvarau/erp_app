@@ -10,6 +10,7 @@
         input, select { padding: 5px; width: 200px; }
         .error { color: red; }
         .success { color: green; }
+        .requirements { font-size: 0.9em; color: #555; }
     </style>
 </head>
 <body>
@@ -22,6 +23,14 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    <p class="requirements">
+        Требования к паролю:<br>
+        - Минимум 8 символов<br>
+        - Хотя бы одна заглавная буква<br>
+        - Хотя бы одна строчная буква<br>
+        - Хотя бы одна цифра<br>
+        - Хотя бы один специальный символ (!@#$%^&*)
+    </p>
     <form method="POST">
         <div class="form-group">
             <label for="username">Имя пользователя:</label>

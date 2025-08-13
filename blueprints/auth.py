@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User, Invitation, PasswordResetToken
-from utils import send_reset_email
+from utils import send_reset_email, validate_password
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
@@ -63,6 +63,11 @@ def reset_password(token):
 
     if request.method == 'POST':
         password = request.form['password']
+        is_valid, message = validate_password(password)
+        if not is_valid:
+            flash(message, 'error')
+            return redirect(url_for('auth.reset_password', token=token))
+
         user = db.session.get(User, reset_token.user_id)
         user.password_hash = generate_password_hash(password)
         db.session.delete(reset_token)
@@ -87,6 +92,11 @@ def register(token):
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
+
+        is_valid, message = validate_password(password)
+        if not is_valid:
+            flash(message, 'error')
+            return redirect(url_for('auth.register', token=token))
 
         if User.query.filter_by(username=username).first():
             flash('Имя пользователя уже занято.', 'error')

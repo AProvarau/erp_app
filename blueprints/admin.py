@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from models import db, Client, Role, User, Invitation, PasswordResetToken
-from utils import send_reset_email
+from utils import send_reset_email, validate_password
 from datetime import datetime
 
 admin_bp = Blueprint('admin', __name__)
@@ -29,6 +29,11 @@ def admin_user_new():
         role_id = request.form['role_id']
         client_id = request.form.get('client_id')
         is_active = 'is_active' in request.form
+
+        is_valid, message = validate_password(password)
+        if not is_valid:
+            flash(message, 'error')
+            return redirect(url_for('admin.admin_user_new'))
 
         if User.query.filter_by(username=username).first():
             flash('Имя пользователя уже занято.', 'error')
@@ -71,6 +76,12 @@ def admin_user_edit(user_id):
         user.role_id = request.form['role_id']
         user.client_id = request.form.get('client_id') or None
         user.is_active = 'is_active' in request.form
+
+        if password:
+            is_valid, message = validate_password(password)
+            if not is_valid:
+                flash(message, 'error')
+                return redirect(url_for('admin.admin_user_edit', user_id=user_id))
 
         if User.query.filter_by(username=user.username).filter(User.user_id != user_id).first():
             flash('Имя пользователя уже занято.', 'error')
@@ -174,7 +185,7 @@ def admin_client_edit(client_id):
 @login_required
 def admin_invitation_new():
     if not current_user.is_admin():
-        flash('Доступ запрещен: требуетс я роль администратора.', 'error')
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
         return redirect(url_for('main.home'))
     if request.method == 'POST':
         role_id = request.form['role_id']
