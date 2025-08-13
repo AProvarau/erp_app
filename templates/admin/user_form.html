@@ -10,6 +10,7 @@
         input, select { padding: 5px; width: 200px; }
         .error { color: red; }
         .success { color: green; }
+        .field-error { color: red; font-size: 0.9em; }
         .requirements { font-size: 0.9em; color: #555; }
     </style>
 </head>
@@ -32,40 +33,64 @@
         - Хотя бы один специальный символ (!@#$%^&*)
     </p>
     <form method="POST">
+        {{ form.hidden_tag() }}
         <div class="form-group">
-            <label for="username">Имя пользователя:</label>
-            <input type="text" id="username" name="username" value="{{ user.username if user else '' }}" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="{{ user.email if user else '' }}" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" name="password" {% if user %}placeholder="Оставьте пустым, чтобы не менять"{% else %}required{% endif %}>
-        </div>
-        <div class="form-group">
-            <label for="role_id">Роль:</label>
-            <select id="role_id" name="role_id" required>
-                {% for role in roles %}
-                <option value="{{ role.role_id }}" {% if user and user.role_id == role.role_id %}selected{% endif %}>{{ role.name }}</option>
+            {{ form.username.label }} {{ form.username() }}
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <p class="field-error">{{ error }}</p>
                 {% endfor %}
-            </select>
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="client_id">Клиент:</label>
-            <select id="client_id" name="client_id">
-                <option value="">Нет</option>
-                {% for client in clients %}
-                <option value="{{ client.client_id }}" {% if user and user.client_id == client.client_id %}selected{% endif %}>{{ client.name }}</option>
+            {{ form.email.label }} {{ form.email() }}
+            {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <p class="field-error">{{ error }}</p>
                 {% endfor %}
-            </select>
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="is_active">Активен:</label>
-            <input type="checkbox" id="is_active" name="is_active" {% if user and user.is_active %}checked{% endif %}>
+            {{ form.password.label }} {{ form.password(placeholder="Оставьте пустым, чтобы не менять" if user else "") }}
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
-        <button type="submit">{% if user %}Сохранить{% else %}Создать{% endif %}</button>
+        <div class="form-group">
+            {{ form.confirm_password.label }} {{ form.confirm_password(placeholder="Оставьте пустым, чтобы не менять" if user else "") }}
+            {% if form.confirm_password.errors %}
+                {% for error in form.confirm_password.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.role_id.label }} {{ form.role_id() }}
+            {% if form.role_id.errors %}
+                {% for error in form.role_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.client_id.label }} {{ form.client_id() }}
+            {% if form.client_id.errors %}
+                {% for error in form.client_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.is_active.label }} {{ form.is_active() }}
+            {% if form.is_active.errors %}
+                {% for error in form.is_active.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {{ form.submit() }}
     </form>
     <a href="{{ url_for('admin.admin_users') }}">Назад к списку</a>
 </body>

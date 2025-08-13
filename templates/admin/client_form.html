@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% if client %}Редактировать клиента{% else %}Создать клиента{% endif %}</title>
+    <title>{% if form.client %}Редактировать клиента{% else %}Создать клиента{% endif %}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -10,10 +10,11 @@
         input, textarea { padding: 5px; width: 200px; }
         .error { color: red; }
         .success { color: green; }
+        .field-error { color: red; font-size: 0.9em; }
     </style>
 </head>
 <body>
-    <h1>{% if client %}Редактировать клиента{% else %}Создать клиента{% endif %}</h1>
+    <h1>{% if form.client %}Редактировать клиента{% else %}Создать клиента{% endif %}</h1>
     <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -23,15 +24,24 @@
         {% endif %}
     {% endwith %}
     <form method="POST">
+        {{ form.hidden_tag() }}
         <div class="form-group">
-            <label for="name">Название:</label>
-            <input type="text" id="name" name="name" value="{{ client.name if client else '' }}" required>
+            {{ form.name.label }} {{ form.name() }}
+            {% if form.name.errors %}
+                {% for error in form.name.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
         <div class="form-group">
-            <label for="description">Описание:</label>
-            <textarea id="description" name="description">{{ client.description if client else '' }}</textarea>
+            {{ form.description.label }} {{ form.description() }}
+            {% if form.description.errors %}
+                {% for error in form.description.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
         </div>
-        <button type="submit">{% if client %}Сохранить{% else %}Создать{% endif %}</button>
+        {{ form.submit() }}
     </form>
     <a href="{{ url_for('admin.admin_clients') }}">Назад к списку</a>
 </body>
