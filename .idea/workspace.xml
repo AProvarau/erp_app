@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="выделение текущих строк">
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Added pagination for general_data, export_contracts, and logs tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blueprints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blueprints/general.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/general.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/export_contracts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/export_contracts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/logs.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/logs.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/general/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -271,7 +267,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755174807897</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added pagination for general_data, export_contracts, and logs tables">
+      <option name="closed" value="true" />
+      <created>1755175558356</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1755175558356</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -336,7 +340,8 @@
     <MESSAGE value="Fixed NameError for ExportContract and added delete functionality for export_contracts" />
     <MESSAGE value="Added record-specific log viewing for general_data and export_contracts" />
     <MESSAGE value="выделение текущих строк" />
-    <option name="LAST_COMMIT_MESSAGE" value="выделение текущих строк" />
+    <MESSAGE value="Added pagination for general_data, export_contracts, and logs tables" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added pagination for general_data, export_contracts, and logs tables" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
