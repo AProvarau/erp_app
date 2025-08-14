@@ -10,6 +10,8 @@
         th { background-color: #f2f2f2; }
         .error { color: red; }
         .success { color: green; }
+        tr { cursor: pointer; } /* Курсор указывает на возможность клика */
+        tr.selected { background-color: #d0e8ff; } /* Стиль для выделенной строки */
     </style>
 </head>
 <body>
@@ -23,7 +25,7 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <table>
+    <table id="general-data-table">
         <tr>
             <th>ID</th>
             <th>Клиент</th>
@@ -62,5 +64,24 @@
         {% endfor %}
     </table>
     <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
+
+    <script>
+        // Получаем таблицу
+        const table = document.getElementById('general-data-table');
+        // Получаем все строки таблицы (кроме заголовка)
+        const rows = table.getElementsByTagName('tr');
+
+        // Добавляем обработчик клика для каждой строки
+        for (let i = 1; i < rows.length; i++) { // Пропускаем первую строку (заголовок)
+            rows[i].addEventListener('click', function() {
+                // Удаляем класс selected у всех строк
+                for (let j = 1; j < rows.length; j++) {
+                    rows[j].classList.remove('selected');
+                }
+                // Добавляем класс selected к текущей строке
+                this.classList.add('selected');
+            });
+        }
+    </script>
 </body>
 </html>

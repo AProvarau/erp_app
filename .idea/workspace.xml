@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Fixed NameError for ExportContract and added delete functionality for export_contracts">
-      <change afterPath="$PROJECT_DIR$/templates/admin/logs.html" afterDir="false" />
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Added record-specific log viewing for general_data and export_contracts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blueprints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blueprints/general.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/general.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/export_contracts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/export_contracts.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/general/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +251,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755171940896</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Added record-specific log viewing for general_data and export_contracts">
+      <option name="closed" value="true" />
+      <created>1755173486198</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1755173486198</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -321,7 +322,8 @@
     <MESSAGE value="Внедрение General_Table" />
     <MESSAGE value="Добавлена таблица данных General_table" />
     <MESSAGE value="Fixed NameError for ExportContract and added delete functionality for export_contracts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed NameError for ExportContract and added delete functionality for export_contracts" />
+    <MESSAGE value="Added record-specific log viewing for general_data and export_contracts" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added record-specific log viewing for general_data and export_contracts" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
