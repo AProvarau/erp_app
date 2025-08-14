@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import db, GeneralData, ExportContract
+from models import db, GeneralData, ExportContract, Log
 from forms import GeneralDataForm
+import json
 
 general_bp = Blueprint('general', __name__, template_folder='templates/general')
 
@@ -36,6 +37,24 @@ def new_entry():
             user_id=current_user.user_id
         )
         db.session.add(entry)
+        db.session.flush()  # Получаем ID записи до коммита
+        # Логируем создание
+        log = Log(
+            user_id=current_user.user_id,
+            action='create',
+            table_name='general_data',
+            record_id=entry.id,
+            details=json.dumps({
+                'client_id': entry.client_id,
+                'gateway_id': entry.gateway_id,
+                'terminal_id': entry.terminal_id,
+                'export_contract_id': entry.export_contract_id,
+                'vehicle': entry.vehicle,
+                'invoice_number': entry.invoice_number,
+                'delivery_address': entry.delivery_address
+            }, ensure_ascii=False)
+        )
+        db.session.add(log)
         db.session.commit()
         flash('Запись успешно создана.', 'success')
         return redirect(url_for('general.index'))
@@ -58,6 +77,17 @@ def edit_entry(id):
         form.client_id.choices = [(current_user.client_id, current_user.client.name)]
         form.export_contract_id.choices = [(contract.export_contract_id, contract.number) for contract in ExportContract.query.filter_by(client_id=current_user.client_id).all()]
     if form.validate_on_submit():
+        # Сохраняем старые значения для лога
+        old_values = {
+            'client_id': entry.client_id,
+            'gateway_id': entry.gateway_id,
+            'terminal_id': entry.terminal_id,
+            'export_contract_id': entry.export_contract_id,
+            'vehicle': entry.vehicle,
+            'invoice_number': entry.invoice_number,
+            'delivery_address': entry.delivery_address
+        }
+        # Обновляем запись
         entry.client_id = form.client_id.data
         entry.gateway_id = form.gateway_id.data
         entry.terminal_id = form.terminal_id.data
@@ -65,6 +95,27 @@ def edit_entry(id):
         entry.vehicle = form.vehicle.data or None
         entry.invoice_number = form.invoice_number.data
         entry.delivery_address = form.delivery_address.data or None
+        # Логируем обновление
+        new_values = {
+            'client_id': entry.client_id,
+            'gateway_id': entry.gateway_id,
+            'terminal_id': entry.terminal_id,
+            'export_contract_id': entry.export_contract_id,
+            'vehicle': entry.vehicle,
+            'invoice_number': entry.invoice_number,
+            'delivery_address': entry.delivery_address
+        }
+        log = Log(
+            user_id=current_user.user_id,
+            action='update',
+            table_name='general_data',
+            record_id=entry.id,
+            details=json.dumps({
+                'old': old_values,
+                'new': new_values
+            }, ensure_ascii=False)
+        )
+        db.session.add(log)
         db.session.commit()
         flash('Запись успешно обновлена.', 'success')
         return redirect(url_for('general.index'))
@@ -81,6 +132,23 @@ def delete_entry(id):
     if not current_user.is_admin() and current_user.client_id is not None and entry.client_id != current_user.client_id:
         flash('Доступ к удалению этой записи запрещён.', 'error')
         return redirect(url_for('general.index'))
+    # Логируем удаление
+    log = Log(
+        user_id=current_user.user_id,
+        action='delete',
+        table_name='general_data',
+        record_id=entry.id,
+        details=json.dumps({
+            'client_id': entry.client_id,
+            'gateway_id': entry.gateway_id,
+            'terminal_id': entry.terminal_id,
+            'export_contract_id': entry.export_contract_id,
+            'vehicle': entry.vehicle,
+            'invoice_number': entry.invoice_number,
+            'delivery_address': entry.delivery_address
+        }, ensure_ascii=False)
+    )
+    db.session.add(log)
     db.session.delete(entry)
     db.session.commit()
     flash('Запись успешно удалена.', 'success')

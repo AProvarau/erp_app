@@ -103,3 +103,15 @@ class GeneralData(db.Model):
     gateway = db.relationship('Gateway', backref='general_data_entries', lazy=True)
     terminal = db.relationship('Terminal', backref='general_data_entries', lazy=True)
     export_contract = db.relationship('ExportContract', backref='general_data_entries', lazy=True)
+
+class Log(db.Model):
+    __tablename__ = 'logs'
+    log_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    action = db.Column(db.String(50), nullable=False)
+    table_name = db.Column(db.String(50), nullable=False)
+    record_id = db.Column(db.Integer, nullable=False)
+    details = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    user = db.relationship('User', backref='logs', lazy=True)

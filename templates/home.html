@@ -21,6 +21,7 @@
             <p><a href="{{ url_for('admin.admin_gateways') }}">Управление шлюзами</a></p>
             <p><a href="{{ url_for('admin.admin_terminals') }}">Управление терминалами</a></p>
             <p><a href="{{ url_for('admin.admin_export_contracts') }}">Управление экспортными контрактами</a></p>
+            <p><a href="{{ url_for('admin.admin_logs') }}">Просмотр логов</a></p>
         {% endif %}
         <p><a href="{{ url_for('auth.logout') }}">Выйти</a></p>
     {% else %}

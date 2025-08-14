@@ -54,6 +54,9 @@
                 <form action="{{ url_for('general.delete_entry', id=entry.id) }}" method="POST" style="display:inline;">
                     <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить эту запись?');">Удалить</button>
                 </form>
+                {% if current_user.is_admin() %}
+                | <a href="{{ url_for('admin.admin_record_logs', table_name='general_data', record_id=entry.id) }}">Посмотреть логи</a>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}

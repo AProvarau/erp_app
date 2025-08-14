@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
-from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal, ExportContract
+from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal, ExportContract, Log
 from forms import UserForm, ClientForm, InvitationForm, GatewayForm, TerminalForm, ExportContractForm
 from utils import send_reset_email
 from datetime import datetime
+import json
 
 admin_bp = Blueprint('admin', __name__)
 
@@ -68,7 +69,7 @@ def admin_user_edit(user_id):
 def admin_user_reset_password(user_id):
     if not current_user.is_admin():
         flash('Доступ запрещен: требуется роль администратора.', 'error')
-        return redirect(url_for('main.home'))
+        return redirect(url_for('admin.admin_users'))
     user = db.session.get(User, user_id)
     if not user:
         flash('Пользователь не найден.', 'error')
@@ -291,6 +292,20 @@ def admin_export_contract_new():
             created_by=current_user.user_id
         )
         db.session.add(contract)
+        db.session.flush()  # Получаем ID записи до коммита
+        # Логируем создание
+        log = Log(
+            user_id=current_user.user_id,
+            action='create',
+            table_name='export_contracts',
+            record_id=contract.export_contract_id,
+            details=json.dumps({
+                'number': contract.number,
+                'date': str(contract.date),
+                'client_id': contract.client_id
+            }, ensure_ascii=False)
+        )
+        db.session.add(log)
         db.session.commit()
         flash('Экспортный контракт успешно создан.', 'success')
         return redirect(url_for('admin.admin_export_contracts'))
@@ -309,9 +324,33 @@ def admin_export_contract_edit(export_contract_id):
     form = ExportContractForm(obj=contract)
     form.export_contract = contract
     if form.validate_on_submit():
+        # Сохраняем старые значения для лога
+        old_values = {
+            'number': contract.number,
+            'date': str(contract.date),
+            'client_id': contract.client_id
+        }
+        # Обновляем контракт
         contract.number = form.number.data
         contract.date = form.date.data
         contract.client_id = form.client_id.data
+        # Логируем обновление
+        new_values = {
+            'number': contract.number,
+            'date': str(contract.date),
+            'client_id': contract.client_id
+        }
+        log = Log(
+            user_id=current_user.user_id,
+            action='update',
+            table_name='export_contracts',
+            record_id=contract.export_contract_id,
+            details=json.dumps({
+                'old': old_values,
+                'new': new_values
+            }, ensure_ascii=False)
+        )
+        db.session.add(log)
         db.session.commit()
         flash('Контракт успешно обновлен.', 'success')
         return redirect(url_for('admin.admin_export_contracts'))
@@ -330,7 +369,41 @@ def admin_export_contract_delete(export_contract_id):
     if contract.general_data_entries:
         flash('Контракт не может быть удалён, так как с ним связаны записи в general_data.', 'error')
         return redirect(url_for('admin.admin_export_contracts'))
+    # Логируем удаление
+    log = Log(
+        user_id=current_user.user_id,
+        action='delete',
+        table_name='export_contracts',
+        record_id=contract.export_contract_id,
+        details=json.dumps({
+            'number': contract.number,
+            'date': str(contract.date),
+            'client_id': contract.client_id
+        }, ensure_ascii=False)
+    )
+    db.session.add(log)
     db.session.delete(contract)
     db.session.commit()
     flash('Контракт успешно удалён.', 'success')
     return redirect(url_for('admin.admin_export_contracts'))
+
+@admin_bp.route('/logs')
+@login_required
+def admin_logs():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    logs = Log.query.order_by(Log.created_at.desc()).all()
+    return render_template('admin/logs.html', logs=logs)
+
+@admin_bp.route('/logs/record/<table_name>/<int:record_id>')
+@login_required
+def admin_record_logs(table_name, record_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    if table_name not in ['general_data', 'export_contracts']:
+        flash('Недопустимое имя таблицы.', 'error')
+        return redirect(url_for('main.home'))
+    logs = Log.query.filter_by(table_name=table_name, record_id=record_id).order_by(Log.created_at.desc()).all()
+    return render_template('admin/logs.html', logs=logs, table_name=table_name, record_id=record_id)

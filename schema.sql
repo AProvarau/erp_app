@@ -82,3 +82,14 @@ CREATE TABLE general_data (
     FOREIGN KEY (terminal_id) REFERENCES terminals (terminal_id),
     FOREIGN KEY (export_contract_id) REFERENCES export_contracts (export_contract_id)
 );
+
+CREATE TABLE logs (
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    action TEXT NOT NULL, -- 'create', 'update', 'delete'
+    table_name TEXT NOT NULL, -- 'general_data', 'export_contracts'
+    record_id INTEGER NOT NULL,
+    details TEXT, -- JSON or text with details
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (user_id)
+);
