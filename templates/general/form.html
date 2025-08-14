@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Создать запись</title>
+    <title>{% if entry %}Редактировать запись{% else %}Создать запись{% endif %}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <h1>Создать запись</h1>
+    <h1>{% if entry %}Редактировать запись{% else %}Создать запись{% endif %}</h1>
     <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -50,6 +50,14 @@
             {% endif %}
         </div>
         <div class="form-group">
+            {{ form.export_contract_id.label }} {{ form.export_contract_id() }}
+            {% if form.export_contract_id.errors %}
+                {% for error in form.export_contract_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
             {{ form.vehicle.label }} {{ form.vehicle() }}
             {% if form.vehicle.errors %}
                 {% for error in form.vehicle.errors %}
@@ -61,6 +69,14 @@
             {{ form.invoice_number.label }} {{ form.invoice_number() }}
             {% if form.invoice_number.errors %}
                 {% for error in form.invoice_number.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.delivery_address.label }} {{ form.delivery_address() }}
+            {% if form.delivery_address.errors %}
+                {% for error in form.delivery_address.errors %}
                     <p class="field-error">{{ error }}</p>
                 {% endfor %}
             {% endif %}

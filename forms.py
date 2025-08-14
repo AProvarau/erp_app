@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField, SubmitField, TextAreaField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, SubmitField, TextAreaField, DateField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import re
-from models import User, Role, Client, Gateway, Terminal
+from models import User, Role, Client, Gateway, Terminal, ExportContract
+from flask_login import current_user
 
 def validate_password_strength(form, field):
     password = field.data
@@ -111,12 +112,29 @@ class TerminalForm(FlaskForm):
         if existing_terminal and (not hasattr(self, 'terminal') or existing_terminal.terminal_id != self.terminal.terminal_id):
             raise ValidationError('Терминал с таким именем уже существует.')
 
+class ExportContractForm(FlaskForm):
+    number = StringField('Номер контракта', validators=[DataRequired(), Length(min=1, max=50)])
+    date = DateField('Дата контракта', validators=[DataRequired()])
+    client_id = SelectField('Клиент', coerce=int, validators=[DataRequired()])
+    submit = SubmitField('Сохранить')
+
+    def __init__(self, *args, **kwargs):
+        super(ExportContractForm, self).__init__(*args, **kwargs)
+        self.client_id.choices = [(client.client_id, client.name) for client in Client.query.all()]
+
+    def validate_number(self, number):
+        existing_contract = ExportContract.query.filter_by(number=number.data).first()
+        if existing_contract and (not hasattr(self, 'export_contract') or existing_contract.export_contract_id != self.export_contract.export_contract_id):
+            raise ValidationError('Контракт с таким номером уже существует.')
+
 class GeneralDataForm(FlaskForm):
     client_id = SelectField('Клиент', coerce=int, validators=[DataRequired()])
     gateway_id = SelectField('Шлюз', coerce=int, validators=[DataRequired()])
     terminal_id = SelectField('Терминал', coerce=int, validators=[DataRequired()])
-    vehicle = StringField('Транспортное средство', validators=[DataRequired(), Length(min=1, max=100)])
+    export_contract_id = SelectField('Экспортный контракт', coerce=int, validators=[DataRequired()])
+    vehicle = StringField('Транспортное средство', validators=[Length(max=100)])
     invoice_number = StringField('№ Инвойса', validators=[DataRequired(), Length(min=1, max=50)])
+    delivery_address = StringField('Адрес доставки', validators=[Length(max=200)])
     submit = SubmitField('Сохранить')
 
     def __init__(self, *args, **kwargs):
@@ -124,3 +142,8 @@ class GeneralDataForm(FlaskForm):
         self.client_id.choices = [(client.client_id, client.name) for client in Client.query.all()]
         self.gateway_id.choices = [(gateway.gateway_id, gateway.name) for gateway in Gateway.query.all()]
         self.terminal_id.choices = [(terminal.terminal_id, terminal.name) for terminal in Terminal.query.all()]
+        self.export_contract_id.choices = [(contract.export_contract_id, contract.number) for contract in ExportContract.query.all()]
+        # Ограничиваем выбор для пользователей с client_id
+        if current_user.is_authenticated and current_user.client_id is not None and not current_user.is_admin():
+            self.client_id.choices = [(current_user.client_id, current_user.client.name)]
+            self.export_contract_id.choices = [(contract.export_contract_id, contract.number) for contract in ExportContract.query.filter_by(client_id=current_user.client_id).all()]

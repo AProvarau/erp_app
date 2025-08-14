@@ -54,17 +54,31 @@ CREATE TABLE terminals (
     name TEXT NOT NULL UNIQUE
 );
 
+CREATE TABLE export_contracts (
+    export_contract_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    number TEXT NOT NULL UNIQUE,
+    date DATE NOT NULL,
+    client_id INTEGER NOT NULL,
+    created_by INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (client_id) REFERENCES clients (client_id),
+    FOREIGN KEY (created_by) REFERENCES users (user_id)
+);
+
 CREATE TABLE general_data (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     client_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
     gateway_id INTEGER NOT NULL,
     terminal_id INTEGER NOT NULL,
-    vehicle TEXT NOT NULL,
+    vehicle TEXT,
     invoice_number TEXT NOT NULL,
+    export_contract_id INTEGER NOT NULL,
+    delivery_address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (client_id) REFERENCES clients (client_id),
     FOREIGN KEY (user_id) REFERENCES users (user_id),
     FOREIGN KEY (gateway_id) REFERENCES gateways (gateway_id),
-    FOREIGN KEY (terminal_id) REFERENCES terminals (terminal_id)
+    FOREIGN KEY (terminal_id) REFERENCES terminals (terminal_id),
+    FOREIGN KEY (export_contract_id) REFERENCES export_contracts (export_contract_id)
 );

@@ -36,6 +36,9 @@ class User(UserMixin, db.Model):
     def is_admin(self):
         return self.role.name == 'Администратор'
 
+    def is_manager(self):
+        return self.role.name == 'Менеджер'
+
 class Invitation(db.Model):
     __tablename__ = 'invitations'
     invitation_id = db.Column(db.Integer, primary_key=True)
@@ -70,6 +73,18 @@ class Terminal(db.Model):
     terminal_id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
 
+class ExportContract(db.Model):
+    __tablename__ = 'export_contracts'
+    export_contract_id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.String(50), nullable=False, unique=True)
+    date = db.Column(db.Date, nullable=False)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.client_id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+
+    client = db.relationship('Client', backref='export_contracts', lazy=True)
+    creator = db.relationship('User', backref='export_contracts', lazy=True)
+
 class GeneralData(db.Model):
     __tablename__ = 'general_data'
     id = db.Column(db.Integer, primary_key=True)
@@ -77,11 +92,14 @@ class GeneralData(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     gateway_id = db.Column(db.Integer, db.ForeignKey('gateways.gateway_id'), nullable=False)
     terminal_id = db.Column(db.Integer, db.ForeignKey('terminals.terminal_id'), nullable=False)
-    vehicle = db.Column(db.String(100), nullable=False)
+    vehicle = db.Column(db.String(100), nullable=True)
     invoice_number = db.Column(db.String(50), nullable=False)
+    export_contract_id = db.Column(db.Integer, db.ForeignKey('export_contracts.export_contract_id'), nullable=False)
+    delivery_address = db.Column(db.String(200), nullable=True)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
     client = db.relationship('Client', backref='general_data_entries', lazy=True)
     user = db.relationship('User', backref='general_data_entries', lazy=True)
     gateway = db.relationship('Gateway', backref='general_data_entries', lazy=True)
     terminal = db.relationship('Terminal', backref='general_data_entries', lazy=True)
+    export_contract = db.relationship('ExportContract', backref='general_data_entries', lazy=True)

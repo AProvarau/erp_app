@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
-from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal
-from forms import UserForm, ClientForm, InvitationForm, GatewayForm, TerminalForm
+from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal, ExportContract
+from forms import UserForm, ClientForm, InvitationForm, GatewayForm, TerminalForm, ExportContractForm
 from utils import send_reset_email
 from datetime import datetime
 
@@ -266,3 +266,71 @@ def admin_terminal_edit(terminal_id):
         flash('Терминал успешно обновлен.', 'success')
         return redirect(url_for('admin.admin_terminals'))
     return render_template('admin/terminal_form.html', form=form)
+
+@admin_bp.route('/export_contracts')
+@login_required
+def admin_export_contracts():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    contracts = ExportContract.query.all()
+    return render_template('admin/export_contracts.html', contracts=contracts)
+
+@admin_bp.route('/export_contract/new', methods=['GET', 'POST'])
+@login_required
+def admin_export_contract_new():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    form = ExportContractForm()
+    if form.validate_on_submit():
+        contract = ExportContract(
+            number=form.number.data,
+            date=form.date.data,
+            client_id=form.client_id.data,
+            created_by=current_user.user_id
+        )
+        db.session.add(contract)
+        db.session.commit()
+        flash('Экспортный контракт успешно создан.', 'success')
+        return redirect(url_for('admin.admin_export_contracts'))
+    return render_template('admin/export_contract_form.html', form=form)
+
+@admin_bp.route('/export_contract/<int:export_contract_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_export_contract_edit(export_contract_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    contract = db.session.get(ExportContract, export_contract_id)
+    if not contract:
+        flash('Контракт не найден.', 'error')
+        return redirect(url_for('admin.admin_export_contracts'))
+    form = ExportContractForm(obj=contract)
+    form.export_contract = contract
+    if form.validate_on_submit():
+        contract.number = form.number.data
+        contract.date = form.date.data
+        contract.client_id = form.client_id.data
+        db.session.commit()
+        flash('Контракт успешно обновлен.', 'success')
+        return redirect(url_for('admin.admin_export_contracts'))
+    return render_template('admin/export_contract_form.html', form=form)
+
+@admin_bp.route('/export_contract/<int:export_contract_id>/delete', methods=['POST'])
+@login_required
+def admin_export_contract_delete(export_contract_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    contract = db.session.get(ExportContract, export_contract_id)
+    if not contract:
+        flash('Контракт не найден.', 'error')
+        return redirect(url_for('admin.admin_export_contracts'))
+    if contract.general_data_entries:
+        flash('Контракт не может быть удалён, так как с ним связаны записи в general_data.', 'error')
+        return redirect(url_for('admin.admin_export_contracts'))
+    db.session.delete(contract)
+    db.session.commit()
+    flash('Контракт успешно удалён.', 'success')
+    return redirect(url_for('admin.admin_export_contracts'))

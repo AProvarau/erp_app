@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Экспортные контракты</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Экспортные контракты</h1>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
+    <a href="{{ url_for('admin.admin_export_contract_new') }}">Создать новый контракт</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Клиент</th>
+            <th>Создано</th>
+            <th>Создал</th>
+            <th>Действия</th>
+        </tr>
+        {% for contract in contracts %}
+        <tr>
+            <td>{{ contract.export_contract_id }}</td>
+            <td>{{ contract.number }}</td>
+            <td>{{ contract.date }}</td>
+            <td>{{ contract.client.name }}</td>
+            <td>{{ contract.created_at }}</td>
+            <td>{{ contract.creator.username }}</td>
+            <td>
+                <a href="{{ url_for('admin.admin_export_contract_edit', export_contract_id=contract.export_contract_id) }}">Редактировать</a> |
+                <form action="{{ url_for('admin.admin_export_contract_delete', export_contract_id=contract.export_contract_id) }}" method="POST" style="display:inline;">
+                    <button type="submit" onclick="return confirm('Вы уверены, что хотите удалить этот контракт?');">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
+</body>
+</html>

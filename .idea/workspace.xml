@@ -4,13 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Внедрение General_Table">
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Добавлена таблица данных General_table">
+      <change afterPath="$PROJECT_DIR$/templates/admin/export_contract_form.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/admin/export_contracts.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/blueprints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blueprints/general.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/general.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/schema.sql" beforeDir="false" afterPath="$PROJECT_DIR$/schema.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/general/form.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/general/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,7 +103,7 @@
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.app">
+  <component name="RunManager" selected="Python.create_admin">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="erp_app" />
       <option name="ENV_FILES" value="" />
@@ -146,8 +150,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.app" />
         <item itemvalue="Python.create_admin" />
+        <item itemvalue="Python.app" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python.create_admin" />
       </list>
@@ -240,7 +244,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755162142699</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Добавлена таблица данных General_table">
+      <option name="closed" value="true" />
+      <created>1755165509161</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1755165509161</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -301,7 +313,8 @@
     <MESSAGE value="+проверка сложности пароля" />
     <MESSAGE value="внедрение Flask-WTF. База UserLogin" />
     <MESSAGE value="Внедрение General_Table" />
-    <option name="LAST_COMMIT_MESSAGE" value="Внедрение General_Table" />
+    <MESSAGE value="Добавлена таблица данных General_table" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавлена таблица данных General_table" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
