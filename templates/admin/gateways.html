@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Шлюзы</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Шлюзы</h1>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
+    <a href="{{ url_for('admin.admin_gateway_new') }}">Создать новый шлюз</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Действия</th>
+        </tr>
+        {% for gateway in gateways %}
+        <tr>
+            <td>{{ gateway.gateway_id }}</td>
+            <td>{{ gateway.name }}</td>
+            <td>{{ gateway.description }}</td>
+            <td><a href="{{ url_for('admin.admin_gateway_edit', gateway_id=gateway.gateway_id) }}">Редактировать</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
+</body>
+</html>

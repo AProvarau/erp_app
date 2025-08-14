@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать запись</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: inline-block; width: 150px; }
+        input, select { padding: 5px; width: 200px; }
+        .error { color: red; }
+        .success { color: green; }
+        .field-error { color: red; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>Создать запись</h1>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.client_id.label }} {{ form.client_id() }}
+            {% if form.client_id.errors %}
+                {% for error in form.client_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.gateway_id.label }} {{ form.gateway_id() }}
+            {% if form.gateway_id.errors %}
+                {% for error in form.gateway_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.terminal_id.label }} {{ form.terminal_id() }}
+            {% if form.terminal_id.errors %}
+                {% for error in form.terminal_id.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.vehicle.label }} {{ form.vehicle() }}
+            {% if form.vehicle.errors %}
+                {% for error in form.vehicle.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.invoice_number.label }} {{ form.invoice_number() }}
+            {% if form.invoice_number.errors %}
+                {% for error in form.invoice_number.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        {{ form.submit() }}
+    </form>
+    <a href="{{ url_for('general.index') }}">Назад к списку</a>
+</body>
+</html>

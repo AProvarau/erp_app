@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, SelectField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, ValidationError
 import re
-from models import User, Role, Client
+from models import User, Role, Client, Gateway, Terminal
 
 def validate_password_strength(form, field):
     password = field.data
@@ -74,7 +74,7 @@ class UserForm(FlaskForm):
 
 class ClientForm(FlaskForm):
     name = StringField('Название клиента', validators=[DataRequired(), Length(min=2, max=100)])
-    description = StringField('Описание')
+    description = TextAreaField('Описание')
     submit = SubmitField('Сохранить')
 
     def validate_name(self, name):
@@ -91,3 +91,36 @@ class InvitationForm(FlaskForm):
         super(InvitationForm, self).__init__(*args, **kwargs)
         self.role_id.choices = [(role.role_id, role.name) for role in Role.query.all()]
         self.client_id.choices = [(0, 'Нет')] + [(client.client_id, client.name) for client in Client.query.all()]
+
+class GatewayForm(FlaskForm):
+    name = StringField('Название шлюза', validators=[DataRequired(), Length(min=2, max=100)])
+    description = TextAreaField('Описание')
+    submit = SubmitField('Сохранить')
+
+    def validate_name(self, name):
+        existing_gateway = Gateway.query.filter_by(name=name.data).first()
+        if existing_gateway and (not hasattr(self, 'gateway') or existing_gateway.gateway_id != self.gateway.gateway_id):
+            raise ValidationError('Шлюз с таким именем уже существует.')
+
+class TerminalForm(FlaskForm):
+    name = StringField('Название терминала', validators=[DataRequired(), Length(min=2, max=100)])
+    submit = SubmitField('Сохранить')
+
+    def validate_name(self, name):
+        existing_terminal = Terminal.query.filter_by(name=name.data).first()
+        if existing_terminal and (not hasattr(self, 'terminal') or existing_terminal.terminal_id != self.terminal.terminal_id):
+            raise ValidationError('Терминал с таким именем уже существует.')
+
+class GeneralDataForm(FlaskForm):
+    client_id = SelectField('Клиент', coerce=int, validators=[DataRequired()])
+    gateway_id = SelectField('Шлюз', coerce=int, validators=[DataRequired()])
+    terminal_id = SelectField('Терминал', coerce=int, validators=[DataRequired()])
+    vehicle = StringField('Транспортное средство', validators=[DataRequired(), Length(min=1, max=100)])
+    invoice_number = StringField('№ Инвойса', validators=[DataRequired(), Length(min=1, max=50)])
+    submit = SubmitField('Сохранить')
+
+    def __init__(self, *args, **kwargs):
+        super(GeneralDataForm, self).__init__(*args, **kwargs)
+        self.client_id.choices = [(client.client_id, client.name) for client in Client.query.all()]
+        self.gateway_id.choices = [(gateway.gateway_id, gateway.name) for gateway in Gateway.query.all()]
+        self.terminal_id.choices = [(terminal.terminal_id, terminal.name) for terminal in Terminal.query.all()]

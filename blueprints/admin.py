@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
-from models import db, Client, Role, User, Invitation, PasswordResetToken
-from forms import UserForm, ClientForm, InvitationForm
+from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal
+from forms import UserForm, ClientForm, InvitationForm, GatewayForm, TerminalForm
 from utils import send_reset_email
 from datetime import datetime
 
@@ -174,3 +174,95 @@ def admin_invitation_delete(invitation_id):
     db.session.commit()
     flash('Приглашение успешно удалено.', 'success')
     return redirect(url_for('admin.admin_invitations'))
+
+@admin_bp.route('/gateways')
+@login_required
+def admin_gateways():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    gateways = Gateway.query.all()
+    return render_template('admin/gateways.html', gateways=gateways)
+
+@admin_bp.route('/gateway/new', methods=['GET', 'POST'])
+@login_required
+def admin_gateway_new():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    form = GatewayForm()
+    if form.validate_on_submit():
+        gateway = Gateway(
+            name=form.name.data,
+            description=form.description.data
+        )
+        db.session.add(gateway)
+        db.session.commit()
+        flash('Шлюз успешно создан.', 'success')
+        return redirect(url_for('admin.admin_gateways'))
+    return render_template('admin/gateway_form.html', form=form)
+
+@admin_bp.route('/gateway/<int:gateway_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_gateway_edit(gateway_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    gateway = db.session.get(Gateway, gateway_id)
+    if not gateway:
+        flash('Шлюз не найден.', 'error')
+        return redirect(url_for('admin.admin_gateways'))
+    form = GatewayForm(obj=gateway)
+    form.gateway = gateway
+    if form.validate_on_submit():
+        gateway.name = form.name.data
+        gateway.description = form.description.data
+        db.session.commit()
+        flash('Шлюз успешно обновлен.', 'success')
+        return redirect(url_for('admin.admin_gateways'))
+    return render_template('admin/gateway_form.html', form=form)
+
+@admin_bp.route('/terminals')
+@login_required
+def admin_terminals():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    terminals = Terminal.query.all()
+    return render_template('admin/terminals.html', terminals=terminals)
+
+@admin_bp.route('/terminal/new', methods=['GET', 'POST'])
+@login_required
+def admin_terminal_new():
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    form = TerminalForm()
+    if form.validate_on_submit():
+        terminal = Terminal(
+            name=form.name.data
+        )
+        db.session.add(terminal)
+        db.session.commit()
+        flash('Терминал успешно создан.', 'success')
+        return redirect(url_for('admin.admin_terminals'))
+    return render_template('admin/terminal_form.html', form=form)
+
+@admin_bp.route('/terminal/<int:terminal_id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_terminal_edit(terminal_id):
+    if not current_user.is_admin():
+        flash('Доступ запрещен: требуется роль администратора.', 'error')
+        return redirect(url_for('main.home'))
+    terminal = db.session.get(Terminal, terminal_id)
+    if not terminal:
+        flash('Терминал не найден.', 'error')
+        return redirect(url_for('admin.admin_terminals'))
+    form = TerminalForm(obj=terminal)
+    form.terminal = terminal
+    if form.validate_on_submit():
+        terminal.name = form.name.data
+        db.session.commit()
+        flash('Терминал успешно обновлен.', 'success')
+        return redirect(url_for('admin.admin_terminals'))
+    return render_template('admin/terminal_form.html', form=form)

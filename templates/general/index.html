@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Общие данные</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Общие данные</h1>
+    <p>Вы вошли как {{ current_user.username }} (<a href="{{ url_for('auth.logout') }}">Выйти</a>)</p>
+    <a href="{{ url_for('general.new_entry') }}">Создать новую запись</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Клиент</th>
+            <th>Пользователь</th>
+            <th>Шлюз</th>
+            <th>Терминал</th>
+            <th>Транспортное средство</th>
+            <th>№ Инвойса</th>
+            <th>Создано</th>
+        </tr>
+        {% for entry in entries %}
+        <tr>
+            <td>{{ entry.id }}</td>
+            <td>{{ entry.client.name }}</td>
+            <td>{{ entry.user.username }}</td>
+            <td>{{ entry.gateway.name }}</td>
+            <td>{{ entry.terminal.name }}</td>
+            <td>{{ entry.vehicle }}</td>
+            <td>{{ entry.invoice_number }}</td>
+            <td>{{ entry.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
+</body>
+</html>

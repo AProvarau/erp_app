@@ -6,12 +6,14 @@ from config import Config
 from blueprints.auth import auth_bp
 from blueprints.admin import admin_bp
 from blueprints.main import main_bp
+from blueprints.general import general_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 # Инициализация базы данных
 db.init_app(app)
+
 
 # Инициализация Flask-Login
 login_manager = LoginManager()
@@ -26,6 +28,7 @@ def load_user(user_id):
 app.register_blueprint(auth_bp, url_prefix='/')
 app.register_blueprint(admin_bp, url_prefix='/admin')
 app.register_blueprint(main_bp, url_prefix='/')
+app.register_blueprint(general_bp, url_prefix='/')
 
 if __name__ == '__main__':
     with app.app_context():
