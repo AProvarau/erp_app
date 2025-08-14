@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -49,6 +10,12 @@
         th { background-color: #f2f2f2; }
         .error { color: red; }
         .success { color: green; }
+        .pagination { margin-top: 20px; }
+        .pagination a, .pagination span { margin: 0 5px; text-decoration: none; }
+        .pagination a:hover { text-decoration: underline; }
+        .pagination .current { font-weight: bold; }
+        .pagination .disabled { color: #ccc; pointer-events: none; }
+        .per-page-form { margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -61,6 +28,16 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    <div class="per-page-form">
+        <form method="GET" action="{{ url_for('admin.admin_logs' if not table_name else 'admin.admin_record_logs', table_name=table_name, record_id=record_id) }}">
+            <label for="per_page">Записей на странице:</label>
+            <select name="per_page" id="per_page" onchange="this.form.submit()">
+                {% for value in [10, 25, 50] %}
+                    <option value="{{ value }}" {% if value == per_page %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
     <table>
         <tr>
             <th>ID</th>
@@ -83,6 +60,31 @@
         </tr>
         {% endfor %}
     </table>
+    {% if pagination %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('admin.admin_logs' if not table_name else 'admin.admin_record_logs', table_name=table_name, record_id=record_id, page=pagination.prev_num, per_page=per_page) }}">Предыдущая</a>
+        {% else %}
+            <span class="disabled">Предыдущая</span>
+        {% endif %}
+        {% for page_num in pagination.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('admin.admin_logs' if not table_name else 'admin.admin_record_logs', table_name=table_name, record_id=record_id, page=page_num, per_page=per_page) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        {% if pagination.has_next %}
+            <a href="{{ url_for('admin.admin_logs' if not table_name else 'admin.admin_record_logs', table_name=table_name, record_id=record_id, page=pagination.next_num, per_page=per_page) }}">Следующая</a>
+        {% else %}
+            <span class="disabled">Следующая</span>
+        {% endif %}
+    </div>
+    {% endif %}
     <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
 </body>
 </html>

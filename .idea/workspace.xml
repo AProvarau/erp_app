@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Added record-specific log viewing for general_data and export_contracts">
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="выделение текущих строк">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blueprints/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blueprints/general.py" beforeDir="false" afterPath="$PROJECT_DIR$/blueprints/general.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/export_contracts.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/export_contracts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/logs.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/logs.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/general/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -94,7 +98,7 @@
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.create_admin">
+  <component name="RunManager" selected="Python.app">
     <configuration name="app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="erp_app" />
       <option name="ENV_FILES" value="" />
@@ -141,8 +145,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.create_admin" />
         <item itemvalue="Python.app" />
+        <item itemvalue="Python.create_admin" />
         <item itemvalue="Python.app" />
         <item itemvalue="Python.create_admin" />
       </list>
@@ -259,7 +263,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755173486198</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="выделение текущих строк">
+      <option name="closed" value="true" />
+      <created>1755174807897</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1755174807897</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -323,7 +335,8 @@
     <MESSAGE value="Добавлена таблица данных General_table" />
     <MESSAGE value="Fixed NameError for ExportContract and added delete functionality for export_contracts" />
     <MESSAGE value="Added record-specific log viewing for general_data and export_contracts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added record-specific log viewing for general_data and export_contracts" />
+    <MESSAGE value="выделение текущих строк" />
+    <option name="LAST_COMMIT_MESSAGE" value="выделение текущих строк" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

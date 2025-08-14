@@ -12,6 +12,12 @@
         .success { color: green; }
         tr { cursor: pointer; } /* Курсор указывает на возможность клика */
         tr.selected { background-color: #d0e8ff; } /* Стиль для выделенной строки */
+        .pagination { margin-top: 20px; }
+        .pagination a, .pagination span { margin: 0 5px; text-decoration: none; }
+        .pagination a:hover { text-decoration: underline; }
+        .pagination .current { font-weight: bold; }
+        .pagination .disabled { color: #ccc; pointer-events: none; }
+        .per-page-form { margin-bottom: 20px; }
     </style>
 </head>
 <body>
@@ -25,6 +31,16 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
+    <div class="per-page-form">
+        <form method="GET" action="{{ url_for('general.index') }}">
+            <label for="per_page">Записей на странице:</label>
+            <select name="per_page" id="per_page" onchange="this.form.submit()">
+                {% for value in [10, 25, 50] %}
+                    <option value="{{ value }}" {% if value == per_page %}selected{% endif %}>{{ value }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
     <table id="general-data-table">
         <tr>
             <th>ID</th>
@@ -63,6 +79,31 @@
         </tr>
         {% endfor %}
     </table>
+    {% if pagination %}
+    <div class="pagination">
+        {% if pagination.has_prev %}
+            <a href="{{ url_for('general.index', page=pagination.prev_num, per_page=per_page) }}">Предыдущая</a>
+        {% else %}
+            <span class="disabled">Предыдущая</span>
+        {% endif %}
+        {% for page_num in pagination.iter_pages(left_edge=2, left_current=2, right_current=3, right_edge=2) %}
+            {% if page_num %}
+                {% if page_num == pagination.page %}
+                    <span class="current">{{ page_num }}</span>
+                {% else %}
+                    <a href="{{ url_for('general.index', page=page_num, per_page=per_page) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+                <span>...</span>
+            {% endif %}
+        {% endfor %}
+        {% if pagination.has_next %}
+            <a href="{{ url_for('general.index', page=pagination.next_num, per_page=per_page) }}">Следующая</a>
+        {% else %}
+            <span class="disabled">Следующая</span>
+        {% endif %}
+    </div>
+    {% endif %}
     <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
 
     <script>
@@ -73,13 +114,16 @@
 
         // Добавляем обработчик клика для каждой строки
         for (let i = 1; i < rows.length; i++) { // Пропускаем первую строку (заголовок)
-            rows[i].addEventListener('click', function() {
-                // Удаляем класс selected у всех строк
-                for (let j = 1; j < rows.length; j++) {
-                    rows[j].classList.remove('selected');
+            rows[i].addEventListener('click', function(e) {
+                // Проверяем, что клик не по ссылке или кнопке в колонке "Действия"
+                if (e.target.tagName !== 'A' && e.target.tagName !== 'BUTTON' && !e.target.closest('form')) {
+                    // Удаляем класс selected у всех строк
+                    for (let j = 1; j < rows.length; j++) {
+                        rows[j].classList.remove('selected');
+                    }
+                    // Добавляем класс selected к текущей строке
+                    this.classList.add('selected');
                 }
-                // Добавляем класс selected к текущей строке
-                this.classList.add('selected');
             });
         }
     </script>

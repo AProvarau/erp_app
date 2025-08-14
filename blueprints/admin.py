@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from models import db, Client, Role, User, Invitation, PasswordResetToken, Gateway, Terminal, ExportContract, Log
@@ -45,7 +45,7 @@ def admin_user_new():
 def admin_user_edit(user_id):
     if not current_user.is_admin():
         flash('Доступ запрещен: требуется роль администратора.', 'error')
-        return redirect(url_for('main.home'))
+        return redirect(url_for('admin.admin_users'))
     user = db.session.get(User, user_id)
     if not user:
         flash('Пользователь не найден.', 'error')
@@ -274,8 +274,15 @@ def admin_export_contracts():
     if not current_user.is_admin():
         flash('Доступ запрещен: требуется роль администратора.', 'error')
         return redirect(url_for('main.home'))
-    contracts = ExportContract.query.all()
-    return render_template('admin/export_contracts.html', contracts=contracts)
+    # Получаем per_page из запроса или сессии, по умолчанию 10
+    per_page = request.args.get('per_page', session.get('per_page', 10), type=int)
+    if per_page not in [10, 25, 50]:
+        per_page = 10
+    session['per_page'] = per_page
+    page = request.args.get('page', 1, type=int)
+    pagination = ExportContract.query.paginate(page=page, per_page=per_page, error_out=False)
+    contracts = pagination.items
+    return render_template('admin/export_contracts.html', contracts=contracts, pagination=pagination, per_page=per_page)
 
 @admin_bp.route('/export_contract/new', methods=['GET', 'POST'])
 @login_required
@@ -393,8 +400,15 @@ def admin_logs():
     if not current_user.is_admin():
         flash('Доступ запрещен: требуется роль администратора.', 'error')
         return redirect(url_for('main.home'))
-    logs = Log.query.order_by(Log.created_at.desc()).all()
-    return render_template('admin/logs.html', logs=logs)
+    # Получаем per_page из запроса или сессии, по умолчанию 10
+    per_page = request.args.get('per_page', session.get('per_page', 10), type=int)
+    if per_page not in [10, 25, 50]:
+        per_page = 10
+    session['per_page'] = per_page
+    page = request.args.get('page', 1, type=int)
+    pagination = Log.query.order_by(Log.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    logs = pagination.items
+    return render_template('admin/logs.html', logs=logs, pagination=pagination, per_page=per_page)
 
 @admin_bp.route('/logs/record/<table_name>/<int:record_id>')
 @login_required
@@ -405,5 +419,12 @@ def admin_record_logs(table_name, record_id):
     if table_name not in ['general_data', 'export_contracts']:
         flash('Недопустимое имя таблицы.', 'error')
         return redirect(url_for('main.home'))
-    logs = Log.query.filter_by(table_name=table_name, record_id=record_id).order_by(Log.created_at.desc()).all()
-    return render_template('admin/logs.html', logs=logs, table_name=table_name, record_id=record_id)
+    # Получаем per_page из запроса или сессии, по умолчанию 10
+    per_page = request.args.get('per_page', session.get('per_page', 10), type=int)
+    if per_page not in [10, 25, 50]:
+        per_page = 10
+    session['per_page'] = per_page
+    page = request.args.get('page', 1, type=int)
+    pagination = Log.query.filter_by(table_name=table_name, record_id=record_id).order_by(Log.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    logs = pagination.items
+    return render_template('admin/logs.html', logs=logs, pagination=pagination, per_page=per_page, table_name=table_name, record_id=record_id)
