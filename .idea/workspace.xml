@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Added 'View Logs' button for selected row in general_data">
+    <list default="true" id="2a8437da-f565-4327-9ed8-7ca62a055ff0" name="Changes" comment="Added pagination for general_data, export_contracts, and logs tables">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project_structure.txt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/general/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/general/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -80,20 +79,19 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "SHELLCHECK.PATH": "I do mind",
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/aprov/PycharmProjects/erp_app/templates/auth",
+    "last_opened_file_path": "C:/Users/aprov/PycharmProjects/erp_app/templates/admin",
     "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\auth" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\admin" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates\general" />
       <recent name="C:\Users\aprov\PycharmProjects\erp_app\blueprints" />
+      <recent name="C:\Users\aprov\PycharmProjects\erp_app\templates" />
     </key>
   </component>
   <component name="RunManager" selected="Python.app">
@@ -277,15 +275,7 @@
       <option name="project" value="LOCAL" />
       <updated>1755175558356</updated>
     </task>
-    <task id="LOCAL-00015" summary="Added 'View Logs' button for selected row in general_data">
-      <option name="closed" value="true" />
-      <created>1755176258130</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1755176258130</updated>
-    </task>
-    <option name="localTasksCounter" value="16" />
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -351,8 +341,7 @@
     <MESSAGE value="Added record-specific log viewing for general_data and export_contracts" />
     <MESSAGE value="выделение текущих строк" />
     <MESSAGE value="Added pagination for general_data, export_contracts, and logs tables" />
-    <MESSAGE value="Added 'View Logs' button for selected row in general_data" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added 'View Logs' button for selected row in general_data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added pagination for general_data, export_contracts, and logs tables" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
