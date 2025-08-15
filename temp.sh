@@ -1,0 +1,2 @@
+tree -f --q
+pause

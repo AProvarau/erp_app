@@ -18,8 +18,6 @@
         .pagination .current { font-weight: bold; }
         .pagination .disabled { color: #ccc; pointer-events: none; }
         .per-page-form { margin-bottom: 20px; }
-        .logs-button { margin: 10px 0; }
-        .logs-button button:disabled { background-color: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -33,11 +31,6 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    {% if current_user.is_admin() %}
-    <div class="logs-button">
-        <button id="view-logs-button" disabled>Посмотреть логи</button>
-    </div>
-    {% endif %}
     <div class="per-page-form">
         <form method="GET" action="{{ url_for('general.index') }}">
             <label for="per_page">Записей на странице:</label>
@@ -63,7 +56,7 @@
             <th>Действия</th>
         </tr>
         {% for entry in entries %}
-        <tr data-id="{{ entry.id }}">
+        <tr>
             <td>{{ entry.id }}</td>
             <td>{{ entry.client.name }}</td>
             <td>{{ entry.user.username }}</td>
@@ -114,11 +107,10 @@
     <p><a href="{{ url_for('main.home') }}">Назад на главную</a></p>
 
     <script>
-        // Получаем таблицу и кнопку
+        // Получаем таблицу
         const table = document.getElementById('general-data-table');
-        const viewLogsButton = document.getElementById('view-logs-button');
+        // Получаем все строки таблицы (кроме заголовка)
         const rows = table.getElementsByTagName('tr');
-        let selectedRowId = null;
 
         // Добавляем обработчик клика для каждой строки
         for (let i = 1; i < rows.length; i++) { // Пропускаем первую строку (заголовок)
@@ -131,26 +123,6 @@
                     }
                     // Добавляем класс selected к текущей строке
                     this.classList.add('selected');
-                    // Сохраняем ID выделенной строки
-                    selectedRowId = this.getAttribute('data-id');
-                    // Активируем кнопку, если пользователь - администратор
-                    if (viewLogsButton) {
-                        viewLogsButton.disabled = false;
-                    }
-                }
-            });
-        }
-
-        // Обработчик клика по кнопке "Посмотреть логи"
-        if (viewLogsButton) {
-            viewLogsButton.addEventListener('click', function() {
-                if (selectedRowId) {
-                    // Формируем URL безопасно, используя базовый путь и добавляя record_id
-                    const baseUrl = '{{ url_for("admin.admin_record_logs", table_name="general_data", record_id=0) }}';
-                    const logsUrl = baseUrl.replace('/0', '/' + selectedRowId);
-                    window.location.href = logsUrl;
-                } else {
-                    alert('Пожалуйста, выберите строку в таблице.');
                 }
             });
         }
